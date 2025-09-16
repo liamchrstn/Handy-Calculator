@@ -8,8 +8,6 @@ A fun Rust app that **counts on fingers and toes** to add numbers.
 
 - Add numbers
 
----
-
 ## Work in Progress
 
 - Subtract numbers
