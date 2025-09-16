@@ -57,7 +57,7 @@ impl eframe::App for LiteralCalculatorApp {
 impl LiteralCalculatorApp {
     /// Renders the main calculator interface.
     fn show_calculator_ui(&mut self, ui: &mut egui::Ui) {
-        ui.heading("The Literal Calculator");
+        ui.heading("Handy Calculator");
         ui.add_space(20.0);
 
         // Input field for the equation

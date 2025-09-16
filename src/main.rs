@@ -109,7 +109,7 @@ impl eframe::App for LiteralCalculatorApp {
 impl LiteralCalculatorApp {
     fn show_calculator_ui(&mut self, ui: &mut egui::Ui) {
         ui.vertical_centered(|ui| {
-            ui.heading("Sum-thing's Afoot Calculator");
+            ui.heading("Handy Calculator");
             ui.add_space(20.0);
             ui.label("Enter addition (e.g., 3+3):");
             ui.text_edit_singleline(&mut self.input_string);
@@ -197,5 +197,5 @@ fn main() {
         viewport: egui::ViewportBuilder::default().with_inner_size([400.0, 600.0]),
         ..Default::default()
     };
-    eframe::run_native("The Literal Calculator", options, Box::new(|cc| Box::new(LiteralCalculatorApp::new(cc)))).expect("Failed to run eframe");
+    eframe::run_native("Handy Calculator", options, Box::new(|cc| Box::new(LiteralCalculatorApp::new(cc)))).expect("Failed to run eframe");
 }
