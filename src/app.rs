@@ -96,9 +96,6 @@ impl LiteralCalculatorApp {
         ui.heading("Counting...");
         ui.add_space(20.0);
 
-        // This is a placeholder for the visual animation.
-        // In a real app, you would load hand/feet images here and draw them.
-        // You would also draw number overlays on the correct fingers/toes.
         if let Some(state) = &mut self.animation_state {
             ui.label(format!("Counting to: {}", state.total));
             ui.label(format!("Current number: {}", state.current_count));
@@ -118,9 +115,6 @@ impl LiteralCalculatorApp {
             // Request a repaint to keep the animation running
             ui.ctx().request_repaint();
         }
-
-        // Placeholder text
-        ui.label("\n(Imagine hands and feet counting here!)");
     }
 
     /// Renders the final result pop-up.

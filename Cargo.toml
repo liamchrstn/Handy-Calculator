@@ -1,5 +1,5 @@
 [package]
-name = "literal_calculator_visual"
+name = "handy-calc"
 version = "0.1.0"
 edition = "2021"
 
