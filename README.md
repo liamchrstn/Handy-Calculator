@@ -1,4 +1,4 @@
-# ✋Handy Calculator
+# <img width="50" height="50" alt="icon" src="https://github.com/user-attachments/assets/57c0ec75-5137-4b6b-9e11-cad75f72a0e1" />Handy Calculator
 
 A fun Rust app that **counts on fingers and toes** to add numbers.
 
@@ -9,6 +9,7 @@ A fun Rust app that **counts on fingers and toes** to add numbers.
 - Add numbers
 
 ## Work in Progress
+
 
 - Subtract numbers
 
