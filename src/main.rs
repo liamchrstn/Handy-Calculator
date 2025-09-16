@@ -30,8 +30,7 @@ struct LiteralCalculatorApp {
     animation_state: Option<AnimationState>,
     result_message: String,
     textures: Textures,
-    // --- Audio fields ---
-    _stream: OutputStream, // Must be kept alive to play audio
+    _stream: OutputStream,
     stream_handle: OutputStreamHandle,
     audio_files: Vec<&'static [u8]>,
 }
@@ -40,28 +39,17 @@ impl LiteralCalculatorApp {
     fn new(cc: &eframe::CreationContext<'_>) -> Self {
         let (_stream, stream_handle) = OutputStream::try_default().expect("Failed to find audio output device");
 
-        // --- Load Audio Files into Memory, CASTING EACH TO A SLICE ---
         let audio_files: Vec<&'static [u8]> = vec![
-            include_bytes!("../assets/audio/1.mp3") as &'static [u8],
-            include_bytes!("../assets/audio/2.mp3") as &'static [u8],
-            include_bytes!("../assets/audio/3.mp3") as &'static [u8],
-            include_bytes!("../assets/audio/4.mp3") as &'static [u8],
-            include_bytes!("../assets/audio/5.mp3") as &'static [u8],
-            include_bytes!("../assets/audio/6.mp3") as &'static [u8],
-            include_bytes!("../assets/audio/7.mp3") as &'static [u8],
-            include_bytes!("../assets/audio/8.mp3") as &'static [u8],
-            include_bytes!("../assets/audio/9.mp3") as &'static [u8],
-            include_bytes!("../assets/audio/10.mp3") as &'static [u8],
-            include_bytes!("../assets/audio/11.mp3") as &'static [u8],
-            include_bytes!("../assets/audio/12.mp3") as &'static [u8],
-            include_bytes!("../assets/audio/13.mp3") as &'static [u8],
-            include_bytes!("../assets/audio/14.mp3") as &'static [u8],
-            include_bytes!("../assets/audio/15.mp3") as &'static [u8],
-            include_bytes!("../assets/audio/16.mp3") as &'static [u8],
-            include_bytes!("../assets/audio/17.mp3") as &'static [u8],
-            include_bytes!("../assets/audio/18.mp3") as &'static [u8],
-            include_bytes!("../assets/audio/19.mp3") as &'static [u8],
-            include_bytes!("../assets/audio/20.mp3") as &'static [u8],
+            include_bytes!("../assets/audio/1.mp3") as &'static [u8], include_bytes!("../assets/audio/2.mp3") as &'static [u8],
+            include_bytes!("../assets/audio/3.mp3") as &'static [u8], include_bytes!("../assets/audio/4.mp3") as &'static [u8],
+            include_bytes!("../assets/audio/5.mp3") as &'static [u8], include_bytes!("../assets/audio/6.mp3") as &'static [u8],
+            include_bytes!("../assets/audio/7.mp3") as &'static [u8], include_bytes!("../assets/audio/8.mp3") as &'static [u8],
+            include_bytes!("../assets/audio/9.mp3") as &'static [u8], include_bytes!("../assets/audio/10.mp3") as &'static [u8],
+            include_bytes!("../assets/audio/11.mp3") as &'static [u8], include_bytes!("../assets/audio/12.mp3") as &'static [u8],
+            include_bytes!("../assets/audio/13.mp3") as &'static [u8], include_bytes!("../assets/audio/14.mp3") as &'static [u8],
+            include_bytes!("../assets/audio/15.mp3") as &'static [u8], include_bytes!("../assets/audio/16.mp3") as &'static [u8],
+            include_bytes!("../assets/audio/17.mp3") as &'static [u8], include_bytes!("../assets/audio/18.mp3") as &'static [u8],
+            include_bytes!("../assets/audio/19.mp3") as &'static [u8], include_bytes!("../assets/audio/20.mp3") as &'static [u8],
         ];
 
         let textures = {
@@ -107,14 +95,59 @@ impl eframe::App for LiteralCalculatorApp {
 }
 
 impl LiteralCalculatorApp {
+    // =================================================================================
+    // ===== THIS IS THE COMPLETELY REDESIGNED UI FUNCTION =============================
+    // =================================================================================
     fn show_calculator_ui(&mut self, ui: &mut egui::Ui) {
         ui.vertical_centered(|ui| {
             ui.heading("Handy Calculator");
             ui.add_space(20.0);
-            ui.label("Enter addition (e.g., 3+3):");
-            ui.text_edit_singleline(&mut self.input_string);
+
+            // --- The Display ---
+            let display_text = if self.input_string.is_empty() { "0" } else { &self.input_string };
+            ui.label(egui::RichText::new(display_text).font(FontId::monospace(40.0)));
+            ui.add_space(20.0);
+
+            // --- The Keypad ---
+            let button_size = Vec2::splat(60.0); // Make buttons square
+            egui::Grid::new("keypad").spacing([10.0, 10.0]).show(ui, |ui| {
+                // --- Row 1 ---
+                if ui.add(egui::Button::new("7").min_size(button_size)).clicked() { self.input_string.push('7'); }
+                if ui.add(egui::Button::new("8").min_size(button_size)).clicked() { self.input_string.push('8'); }
+                if ui.add(egui::Button::new("9").min_size(button_size)).clicked() { self.input_string.push('9'); }
+                if ui.add(egui::Button::new("+").min_size(button_size)).clicked() {
+                    // Only add '+' if the string is not empty and doesn't already have one
+                    if !self.input_string.is_empty() && !self.input_string.contains('+') {
+                        self.input_string.push('+');
+                    }
+                }
+                ui.end_row();
+
+                // --- Row 2 ---
+                if ui.add(egui::Button::new("4").min_size(button_size)).clicked() { self.input_string.push('4'); }
+                if ui.add(egui::Button::new("5").min_size(button_size)).clicked() { self.input_string.push('5'); }
+                if ui.add(egui::Button::new("6").min_size(button_size)).clicked() { self.input_string.push('6'); }
+                if ui.add(egui::Button::new("C").min_size(button_size)).clicked() { self.input_string.clear(); }
+                ui.end_row();
+
+                // --- Row 3 ---
+                if ui.add(egui::Button::new("1").min_size(button_size)).clicked() { self.input_string.push('1'); }
+                if ui.add(egui::Button::new("2").min_size(button_size)).clicked() { self.input_string.push('2'); }
+                if ui.add(egui::Button::new("3").min_size(button_size)).clicked() { self.input_string.push('3'); }
+                // This cell is empty, we will put the Solve button below the grid
+                ui.label("");
+                ui.end_row();
+
+                // --- Row 4 ---
+                // Empty cell
+                if ui.add(egui::Button::new("0").min_size(button_size)).clicked() { self.input_string.push('0'); }
+            });
+
             ui.add_space(10.0);
-            if ui.button("Count!").clicked() {
+
+            // --- The Solve Button ---
+            let solve_button_size = Vec2::new(button_size.x * 4.0 + 30.0, button_size.y);
+            if ui.add(egui::Button::new("Solve!").min_size(solve_button_size)).clicked() {
                 let parts: Vec<&str> = self.input_string.split('+').map(|s| s.trim()).collect();
                 if parts.len() == 2 {
                     if let (Ok(num1), Ok(num2)) = (parts[0].parse::<u8>(), parts[1].parse::<u8>()) {
@@ -167,7 +200,7 @@ impl LiteralCalculatorApp {
                     let audio_data = self.audio_files[(state.current_count - 1) as usize];
                     let source = Decoder::new(Cursor::new(audio_data)).unwrap();
                     let _ = self.stream_handle.play_raw(source.convert_samples());
-                    state.last_update = Instant::now(); // Reset timer here after playing sound
+                    state.last_update = Instant::now();
                 } else {
                     self.result_message = format!("{} + {} = {}", state.num1, state.num2, state.total);
                     self.current_view = AppView::Result;
@@ -194,7 +227,9 @@ impl LiteralCalculatorApp {
 
 fn main() {
     let options = eframe::NativeOptions {
-        viewport: egui::ViewportBuilder::default().with_inner_size([400.0, 600.0]),
+        viewport: egui::ViewportBuilder::default()
+            .with_inner_size([400.0, 600.0])
+            .with_resizable(false),
         ..Default::default()
     };
     eframe::run_native("Handy Calculator", options, Box::new(|cc| Box::new(LiteralCalculatorApp::new(cc)))).expect("Failed to run eframe");
